@@ -3,29 +3,32 @@ HW04a
 Author: Xinyi Ye
 Date: 02/18/2020
 """
-import urllib.request
-import json
 
+import json
+import requests
 
 def find_re(s):
     """ find_re() function: input GitHub id, and get repository and commits number. """
     url_r = f"https://api.github.com/users/{s}/repos"
     l_data = []
     try:
-        fp_r = urllib.request.urlopen(url_r)
+        fp_r = requests.get(url_r)
+
     except ValueError:
         return(f"can't open {url_r}")
     else:
-        data_r = json.load(fp_r)
+        fp_r_1 = fp_r.text
+        data_r = json.loads(fp_r_1)
         for r in data_r:
             l = []
             url_c = f"https://api.github.com/repos/{s}/{r['name']}/commits"
             try:
-                fp_c = urllib.request.urlopen(url_c)
+                fp_c = requests.get(url_c)
             except ValueError:
                 return(f"can't open {url_c}")
             else:
-                data_c = json.load(fp_c)
+                fp_c_1 = fp_c.text
+                data_c = json.loads(fp_c_1)
                 l = [r['name'], len(data_c)]
                 l_data. append(l)
         return l_data
